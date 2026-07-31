@@ -40,6 +40,7 @@ if [[ $include_secrets == true ]]; then
   clone_repository infra-secrets infra-secrets
 fi
 
+git -C AM32 remote set-url origin "$github_org/AM32.git"
 if git -C AM32 remote get-url upstream >/dev/null 2>&1; then
   git -C AM32 remote set-url upstream https://github.com/am32-firmware/AM32.git
 else
