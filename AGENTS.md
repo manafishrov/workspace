@@ -83,3 +83,10 @@ For every changed repository:
 2. Report its branch and concise `git status`.
 3. Explain cross-repository ordering or compatibility constraints.
 4. Leave all remote operations to explicit user approval.
+5. After a user-authorized pull request merge, the coordinating agent must
+   archive the corresponding Paseo worktree workspace in the same turn. Before
+   archiving, verify that the pull request is merged, the worktree is clean,
+   and the branch has no unpushed commits. Never archive an unmerged, dirty, or
+   ahead-of-remote workspace. If the user reports a merge performed elsewhere,
+   do this cleanup at the next coordination interaction. Archiving retains the
+   local Git branch.

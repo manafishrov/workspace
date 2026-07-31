@@ -63,12 +63,20 @@ Use `--mode checkout-pr --pr-number <number>` for a pull request. Add
 
 ## Archive
 
-Inspect the worktree and ensure all wanted work is committed before archiving:
+After a user-authorized pull request merge, the coordinating agent archives the
+corresponding worktree workspace in the same turn. If the pull request was
+merged elsewhere, the agent performs this cleanup at the next coordination
+interaction.
+
+Before archiving, verify that the pull request is merged, the worktree is
+clean, and the branch has no unpushed commits:
 
 ```sh
 git -C <worktree-path> status --short --branch
 paseo workspace archive <workspace-id>
 ```
+
+Do not archive an unmerged, dirty, or ahead-of-remote workspace.
 
 Archiving a Paseo-owned worktree workspace archives its agents and terminals
 and lets Paseo clean up the owned worktree after its final active reference is
