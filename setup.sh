@@ -12,6 +12,13 @@ elif [[ $# -ne 0 ]]; then
   exit 2
 fi
 
+# Stop before cloning anything if an old checkout (or symlink) remains.
+if [[ -e AM32 || -L AM32 ]]; then
+  echo "Legacy AM32 path found; setup will not create a duplicate esc-firmware checkout." >&2
+  echo "If esc-firmware also exists, reconcile both checkouts manually. See README.md: Upgrade an existing workspace." >&2
+  exit 1
+fi
+
 clone_repository() {
   local directory=$1
   local repository=$2
@@ -33,19 +40,19 @@ clone_repository app app
 clone_repository ui ui
 clone_repository firmware firmware
 clone_repository mcu-firmware mcu-firmware
-clone_repository AM32 AM32
+clone_repository esc-firmware esc-firmware
 clone_repository infra infra
 
 if [[ $include_secrets == true ]]; then
   clone_repository infra-secrets infra-secrets
 fi
 
-git -C AM32 remote set-url origin "$github_org/AM32.git"
-if git -C AM32 remote get-url upstream >/dev/null 2>&1; then
-  git -C AM32 remote set-url upstream https://github.com/am32-firmware/AM32.git
+git -C esc-firmware remote set-url origin "$github_org/esc-firmware.git"
+if git -C esc-firmware remote get-url upstream >/dev/null 2>&1; then
+  git -C esc-firmware remote set-url upstream https://github.com/am32-firmware/AM32.git
 else
-  git -C AM32 remote add upstream https://github.com/am32-firmware/AM32.git
+  git -C esc-firmware remote add upstream https://github.com/am32-firmware/AM32.git
 fi
-git -C AM32 remote set-url --push upstream DISABLED
+git -C esc-firmware remote set-url --push upstream DISABLED
 
 echo "Manafish ROV workspace is ready."

@@ -20,8 +20,26 @@ Maintainers with access to the private secrets repository can include it with:
 ```
 
 The setup script is idempotent: existing Git checkouts are preserved. It also
-configures the Manafish AM32 fork with the community repository as a
+configures the Manafish AM32 fork, [esc-firmware](https://github.com/manafishrov/esc-firmware),
+with [am32-firmware/AM32](https://github.com/am32-firmware/AM32) as a
 fetch-only `upstream` remote.
+
+### Upgrade an existing workspace
+
+The Manafish fork and local directory are now named `esc-firmware` instead of
+`AM32`. The AM32 product and community upstream are unchanged.
+
+If an `AM32` path remains, setup stops before cloning or changing remotes.
+Inspect its local changes and `git -C AM32 worktree list` first. If both
+`AM32` and `esc-firmware` exist, reconcile them manually before rerunning setup;
+do not overwrite either checkout. For a single checkout with no linked worktrees,
+manually rename `AM32` to `esc-firmware`. With linked worktrees or Paseo-managed
+paths, coordinate the move and repair their paths before proceeding.
+
+Then run `./setup.sh`. It sets `esc-firmware`'s `origin` to
+`git@github.com:manafishrov/esc-firmware.git`, keeps `upstream` at
+`https://github.com/am32-firmware/AM32.git`, and disables upstream pushes.
+Both directory names remain ignored to protect child repository contents.
 
 ## Repositories
 
@@ -31,7 +49,7 @@ fetch-only `upstream` remote.
 | `ui/` | Published SolidJS component library used by the app |
 | `firmware/` | Raspberry Pi/NixOS service running on the ROV |
 | `mcu-firmware/` | Raspberry Pi Pico thruster firmware |
-| `AM32/` | Manafish-maintained AM32 firmware running on the thruster ESCs |
+| `esc-firmware/` | Manafish-maintained AM32 firmware running on the thruster ESCs |
 | `infra/` | Kubernetes and OpenTofu infrastructure |
 | `infra-secrets/` | Private SOPS-encrypted infrastructure secrets |
 
@@ -92,7 +110,7 @@ paseo workspace ls
 Inspect all primary repository checkouts:
 
 ```sh
-for repo in app ui firmware mcu-firmware AM32 infra infra-secrets; do
+for repo in app ui firmware mcu-firmware esc-firmware infra infra-secrets; do
   git -C "$repo" status --short --branch
 done
 ```
