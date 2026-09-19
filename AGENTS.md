@@ -8,7 +8,8 @@ Paseo project, but preserve each child repository's history, branches,
 releases, CI, and permissions.
 
 `setup.sh` populates a fresh workspace. Keep its repository list, directory
-capitalization, and AM32 remote configuration aligned with the tables below.
+capitalization, and `esc-firmware` remote configuration aligned with the tables
+below.
 
 ## Coordination repository
 
@@ -31,7 +32,7 @@ explicit user authorization.
 | `ui/` | Published SolidJS component library | Consumed by `app` |
 | `firmware/` | Raspberry Pi/NixOS ROV service | Communicates with `app` and `mcu-firmware` |
 | `mcu-firmware/` | Raspberry Pi Pico thruster firmware | USB protocol consumed by `firmware` |
-| `AM32/` | Manafish-maintained AM32 ESC firmware | Receives DShot commands from `mcu-firmware` |
+| `esc-firmware/` | Manafish-maintained AM32 ESC firmware | Receives DShot commands from `mcu-firmware` |
 | `infra/` | Kubernetes and OpenTofu infrastructure | Paired with `infra-secrets` |
 | `infra-secrets/` | Private SOPS-encrypted manifests | Sensitive companion to `infra` |
 
@@ -60,8 +61,8 @@ requests it.
 - Never overwrite, reset, clean, or switch a primary checkout to prepare a
   task.
 - Keep commits and pull requests separate per repository.
-- `AM32` is an independent Manafish product fork. Preserve its custom safety
-  changes when importing fixes from `am32-firmware/AM32`.
+- `esc-firmware` is an independent Manafish AM32 product fork. Preserve its
+  custom safety changes when importing fixes from `am32-firmware/AM32`.
 - Never push, merge, tag, release, publish, or deploy without explicit user
   authorization.
 - Pushing `ui` may publish a package. Pushing `infra` or `infra-secrets` may

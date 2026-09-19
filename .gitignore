@@ -4,6 +4,8 @@
 /ui/
 /firmware/
 /mcu-firmware/
+/esc-firmware/
+# Legacy checkout safety: never stage the old child repository.
 /AM32/
 /infra/
 /infra-secrets/

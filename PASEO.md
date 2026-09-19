@@ -92,7 +92,8 @@ git -C <repository> branch -d <branch>
 - Use the coordination workspace for planning and cross-repository inspection.
 - Use worktree workspaces for implementation.
 - Never use a primary checkout as a disposable branch.
-- In `AM32`, keep `origin` pointed at the Manafish fork and `upstream` pointed
-  at `am32-firmware/AM32`; import upstream changes deliberately.
+- In `esc-firmware`, keep `origin` pointed at `manafishrov/esc-firmware` and
+  `upstream` pointed at `am32-firmware/AM32` with upstream pushes disabled;
+  import upstream changes deliberately.
 - Never push, release, publish, or deploy unless the user explicitly asks.
 - Keep `infra-secrets` out of ordinary tasks.
