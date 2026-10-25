@@ -2,27 +2,16 @@
 
 ## Purpose
 
-This directory is the coordination root for the Manafish ROV project. It
-contains several independent Git repositories. Treat the directory as one
-Paseo project, but preserve each child repository's history, branches,
-releases, CI, and permissions.
+This repository pins the Manafish ROV repositories as Git submodules so the
+whole project can be opened, searched, and changed from one checkout. It is not
+a monorepo: each submodule keeps its own history, branches, CI, releases, and
+pull requests.
 
-`setup.sh` populates a fresh workspace. Keep its repository list, directory
-capitalization, and `esc-firmware` remote configuration aligned with the tables
-below.
-
-## Coordination repository
-
-The root Git repository owns only the workspace documentation and bootstrap
-files. Validate root changes with:
+If the submodule directories are empty, run:
 
 ```sh
-bash -n setup.sh
-git diff --check
+git submodule update --init
 ```
-
-Use Conventional Commits. Do not push root or child repositories without
-explicit user authorization.
 
 ## Repositories
 
@@ -33,48 +22,61 @@ explicit user authorization.
 | `firmware/` | Raspberry Pi/NixOS ROV service | Communicates with `app` and `mcu-firmware` |
 | `mcu-firmware/` | Raspberry Pi Pico thruster firmware | USB protocol consumed by `firmware` |
 | `esc-firmware/` | Manafish-maintained AM32 ESC firmware | Receives DShot commands from `mcu-firmware` |
-| `infra/` | Kubernetes and OpenTofu infrastructure | Paired with `infra-secrets` |
-| `infra-secrets/` | Private SOPS-encrypted manifests | Sensitive companion to `infra` |
+| `infra/` | Kubernetes and OpenTofu infrastructure | Secrets live in the separate private `infra-secrets` repository |
 
-## Required routing
+## Working in a repository
 
 1. Identify every repository affected by the task.
 2. Read that repository's `AGENTS.md` completely before changing it.
-3. For implementation, use a Paseo-managed worktree workspace created from
-   the affected repository and owned by this Manafish ROV Paseo project.
-4. Use a separate worktree workspace for each repository in a cross-repository
-   task. Use the same task identifier in workspace titles and branch names.
-5. Coordinate interface changes explicitly. State the compatibility and
-   merge/release order when a task spans repositories.
+3. Submodules are checked out at a pinned commit with a detached HEAD. Before
+   changing one, start a branch from its latest `main`:
 
-Planning and read-only investigation may run from this coordination root.
-Do not implement in the primary child checkouts unless the user explicitly
-requests it.
+   ```sh
+   git -C <repository> fetch origin
+   git -C <repository> switch -c <branch> origin/main
+   ```
+
+4. Commit, push, and open pull requests from inside the submodule. Each
+   repository gets its own commits and pull request against its own `main`.
+5. For a cross-repository task, use the same branch name in every affected
+   repository. State the compatibility and merge/release order explicitly.
+
+## Workspace repository
+
+The workspace repository owns only this documentation, `.gitmodules`, and the
+pinned submodule commits. Renovate updates the pinned commits, so do not
+commit submodule pointer changes as part of feature work unless asked.
+
+Validate workspace changes with:
+
+```sh
+git diff --check
+git submodule status
+```
+
+Use Conventional Commits.
 
 ## Git safety
 
-- This coordination directory is not the Git history for its children.
-- Child repositories are ignored by the coordination repository; never remove
-  those ignore rules or stage child repository contents.
-- From the coordination root, always use `git -C <repository> ...`.
-- Before creating worktrees, inspect the source repository and base branch.
-- Never overwrite, reset, clean, or switch a primary checkout to prepare a
-  task.
-- Keep commits and pull requests separate per repository.
-- `esc-firmware` is an independent Manafish AM32 product fork. Preserve its
-  custom safety changes when importing fixes from `am32-firmware/AM32`.
 - Never push, merge, tag, release, publish, or deploy without explicit user
   authorization.
-- Pushing `ui` may publish a package. Pushing `infra` or `infra-secrets` may
-  deploy. Follow each repository's instructions.
+- Pushing `ui` may publish a package. Pushing `infra` may deploy. Follow each
+  repository's instructions.
+- Never discard, reset, or clean work in a submodule you did not create.
+- `esc-firmware` is an independent Manafish AM32 product fork. Preserve its
+  custom safety changes when importing fixes from `am32-firmware/AM32`. Add
+  the upstream as a fetch-only remote when needed:
+
+  ```sh
+  git -C esc-firmware remote add upstream https://github.com/am32-firmware/AM32.git
+  git -C esc-firmware remote set-url --push upstream DISABLED
+  ```
 
 ## Secrets
 
-- Include `infra-secrets` only when the task explicitly requires it.
-- Treat encrypted values as opaque.
-- Never decrypt secrets into chat, logs, temporary plaintext files, or agent
-  prompts.
-- Never expose private keys or credentials.
+`infra-secrets` is not part of this workspace. Include it only when a task
+explicitly requires it. Treat encrypted values as opaque and never decrypt
+secrets into chat, logs, temporary plaintext files, or prompts.
 
 ## Completion
 
@@ -84,10 +86,3 @@ For every changed repository:
 2. Report its branch and concise `git status`.
 3. Explain cross-repository ordering or compatibility constraints.
 4. Leave all remote operations to explicit user approval.
-5. After a user-authorized pull request merge, the coordinating agent must
-   archive the corresponding Paseo worktree workspace in the same turn. Before
-   archiving, verify that the pull request is merged, the worktree is clean,
-   and the branch has no unpushed commits. Never archive an unmerged, dirty, or
-   ahead-of-remote workspace. If the user reports a merge performed elsewhere,
-   do this cleanup at the next coordination interaction. Archiving retains the
-   local Git branch.

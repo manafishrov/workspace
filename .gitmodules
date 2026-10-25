@@ -1,0 +1,24 @@
+[submodule "app"]
+	path = app
+	url = ../app.git
+	branch = main
+[submodule "ui"]
+	path = ui
+	url = ../ui.git
+	branch = main
+[submodule "firmware"]
+	path = firmware
+	url = ../firmware.git
+	branch = main
+[submodule "mcu-firmware"]
+	path = mcu-firmware
+	url = ../mcu-firmware.git
+	branch = main
+[submodule "infra"]
+	path = infra
+	url = ../infra.git
+	branch = main
+[submodule "esc-firmware"]
+	path = esc-firmware
+	url = ../esc-firmware.git
+	branch = main
