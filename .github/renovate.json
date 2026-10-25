@@ -9,11 +9,20 @@
   "schedule": ["before 09:00 on monday"],
   "labels": ["dependencies"],
   "commitMessagePrefix": "chore(deps): ",
-  "enabledManagers": ["github-actions"],
+  "enabledManagers": ["github-actions", "git-submodules"],
+  "git-submodules": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
+      "matchManagers": ["git-submodules"],
+      "groupName": "submodules",
       "automerge": true,
       "platformAutomerge": true
     }

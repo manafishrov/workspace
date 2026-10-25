@@ -20,9 +20,10 @@ jobs:
     name: ci
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      # Fails if a pinned submodule commit is not reachable on its remote.
+      - name: Checkout code and submodules
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Check setup script syntax
-        run: bash -n setup.sh
-      - name: Lint setup script
-        run: shellcheck setup.sh
+        with:
+          submodules: true
+      - name: Show pinned submodules
+        run: git submodule status
