@@ -23,8 +23,9 @@
     {
       "matchManagers": ["git-submodules"],
       "groupName": "submodules",
+      "schedule": ["before 09:00"],
       "automerge": true,
-      "platformAutomerge": true
+      "platformAutomerge": false
     }
   ]
 }
