@@ -49,6 +49,11 @@ To move every submodule to its latest `main` locally:
 git submodule update --remote
 ```
 
+## Testing
+
+[TESTING.md](TESTING.md) is the checklist for testing app and firmware
+release candidates together on a real ROV.
+
 ## Secrets
 
 The private `infra-secrets` repository is not a submodule. Maintainers who

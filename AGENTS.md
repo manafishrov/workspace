@@ -43,8 +43,8 @@ git submodule update --init
 
 ## Workspace repository
 
-The workspace repository owns only this documentation, `.gitmodules`, and the
-pinned submodule commits. Renovate updates the pinned commits, so do not
+The workspace repository owns only this documentation, the release test
+checklist in `TESTING.md`, `.gitmodules`, and the pinned submodule commits. Renovate updates the pinned commits, so do not
 commit submodule pointer changes as part of feature work unless asked.
 
 Validate workspace changes with:
@@ -55,6 +55,13 @@ git submodule status
 ```
 
 Use Conventional Commits.
+
+## Release testing
+
+`TESTING.md` is the end-to-end checklist for testing app and firmware release
+candidates together on a real ROV. When asked to run tests from it, run what
+you can without hardware, report each test by its number, and say which tests
+need someone at the ROV. Add new tests at the end; never renumber.
 
 ## Git safety
 
